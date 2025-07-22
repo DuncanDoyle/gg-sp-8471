@@ -73,10 +73,8 @@ Be able to grant access based on a, possible, partial match of scopes. Say you h
   }
 ]
 
-And say you want to grant access to a route if:
-- the JWT contains "app1.resource1:read AND app1.resource1.update"
-- the JWT contains "app1.resource1:read OR app1.rsource1.update"
-
-
-And for another route you want to grant access if:
-- the JWT contains app2.resource.read
+And say you want to grant access to a 4 different routes with the following 4 different policies:
+- Route 1: the JWT contains "app1.resource1:read AND app1.resource1.update"
+- Route 2: the JWT contains "app1.resource1:read OR app1.rsource1.update"
+- Route 3: the JWT contains "((app1.resource1: read AND app1.resource1.update) OR app2.resource1.read)"
+- Route 4: the JWT contains app2.resource1.read
