@@ -1,0 +1,44 @@
+apiVersion: gateway.solo.io/v1
+kind: RouteOption
+metadata:
+  name: jwt
+  namespace: default
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: api-example-com
+  options:
+    jwtProvidersStaged:
+      afterExtAuth:
+        providers:
+          selfminted:
+            issuer: solo.io
+            jwks:
+              local:
+                key: |
+                  -----BEGIN PUBLIC KEY-----
+                  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAskFAGESgB22iOsGk/UgX
+                  BXTmMtd8R0vphvZ4RkXySOIra/vsg1UKay6aESBoZzeLX3MbBp5laQenjaYJ3U8P
+                  QLCcellbaiyUuE6+obPQVIa9GEJl37GQmZIMQj4y68KHZ4m2WbQVlZVIw/Uw52cw
+                  eGtitLMztiTnsve0xtgdUzV0TaynaQrRW7REF+PtLWitnvp9evweOrzHhQiPLcdm
+                  fxfxCbEJHa0LRyyYatCZETOeZgkOHlYSU0ziyMhHBqpDH1vzXrM573MQ5MtrKkWR
+                  T4ZQKuEe0Acyd2GhRg9ZAxNqs/gbb8bukDPXv4JnFLtWZ/7EooKbUC/QBKhQYAsK
+                  bQIDAQAB
+                  -----END PUBLIC KEY-----
+    rbac:
+      policies:
+        viewer:
+          nestedClaimDelimiter: .
+          principals:
+          # Note that this list of jwtPrincipals has OR semantics, and claims within a single jtwPrincipal have AND semantics.
+          - jwtPrincipal:
+              claims:
+                sub: alice
+                team: ops
+              # matcher: LIST_CONTAINS
+              matcher: EXACT_STRING
+          - jwtPrincipal:
+              claims:
+                org: solo.io
+              matcher: EXACT_STRING
